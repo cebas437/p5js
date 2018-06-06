@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>Pong</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script>
+    <script>
+        var ballX;
+        var ballY;
+        var ballSpeedX = 0;
+        var ballSpeedY = 0;
+        var paddleHeight = 30;
+        var paddleX = 0 // controls X varibel
+
+        function setup() {
+            createCanvas(800, 600);
+            noCursor();
+            ballX = random(width);
+            ballY = random(50, height / 2);
+        }
+
+        function draw() {
+            background(128);
+            moveBall();
+            checkCollide();
+            drawPaddle();
+            drawBall();
+            paddleX = constrain(paddleX, 0, width - 200) //donsnt let the paddle go out of bounds
+        }
+
+        // moves top paddle to left or right
+        function keyPressed() {
+            if (keyCode === LEFT_ARROW) {
+                paddleX -= 150
+            }
+            else if (keyCode === RIGHT_ARROW) {
+                paddleX += 150
+            }
+
+        }
+
+        function moveBall() {
+            ballX = ballX + ballSpeedX;
+            ballY = ballY + ballSpeedY;
+
+            console.log("ballSpeedX: " + ballSpeedX +
+                ", ballSpeedY: " + ballSpeedY);
+        }
+
+        function checkCollide() {
+            if (ballX < 0 || ballX > width) {
+                ballSpeedX = ballSpeedX * -1.2;
+            }
+            
+            // makes ball bounce off top paddle
+            if (ballY < paddleHeight) {
+                if (ballX > paddleX && ballX < paddleX + 200) { // ball is within paddle horizontally
+                    ballSpeedY++
+                    ballSpeedY = ballSpeedY * -1.2; // makes ball go faster
+
+                }
+                else {
+                    text("GAME OVER!", width / 2, height / 2);
+                    noLoop();
+                }
+
+
+            }
+
+
+            if (ballY > height - paddleHeight) { // ball is past goal line vertically
+                if (ballX > mouseX && ballX < mouseX + 200) { // ball is within paddle horizontally
+                    ballSpeedY++
+                    ballSpeedY = ballSpeedY * -1.2;
+
+                }
+                else {
+                    text("GAME OVER!", width / 2, height / 2);
+                    noLoop();
+                }
+            }
+        }
+
+        function drawBall() {
+            noStroke();
+            fill(255)
+            ellipse(ballX, ballY, 20, 20);
+        }
+
+        function drawPaddle() {
+            strokeWeight(4);
+            fill(0, 0, 255)
+            rect(mouseX, height - paddleHeight - 4, 200, paddleHeight);
+            fill(255, 0, 0)
+            rect(paddleX, paddleHeight - 25, 200, paddleHeight) // creates top paddle
+
+        }
+
+        function mousePressed() {
+            ballSpeedX = 5
+            ballSpeedY = 5
+        }
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
